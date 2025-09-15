@@ -21,17 +21,17 @@ def main():
     Note: Data should be saved before analysis.
     """
 
-    start_time = time.time()
     if CONFIG['fetch_and_save_data']:
+        start_time = time.time()
         fetch_and_save_data()
-    end_time = time.time()
-    print(f"Time taken to fetch and save data: {end_time - start_time:.2f} seconds")
+        end_time = time.time()
+        print(f"Time taken to fetch and save data: {end_time - start_time:.2f} seconds")
 
-    start_time = time.time()
     if CONFIG['analyze_data_from_files']:
+        start_time = time.time()
         analyze_data()
-    end_time = time.time()
-    print(f"Time taken to analyze data: {end_time - start_time:.2f} seconds")
+        end_time = time.time()
+        print(f"Time taken to analyze data: {end_time - start_time:.2f} seconds")
 
 
 if __name__ == '__main__':
