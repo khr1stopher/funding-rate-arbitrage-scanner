@@ -1,5 +1,5 @@
 import datetime
-
+import time
 import pandas as pd
 from config import CONFIG
 from exchange import init_exchange, get_all_trading_pairs, get_funding_rate, get_historical_funding_rates, get_ohlc
@@ -68,6 +68,7 @@ def get_funding_rates_for_pairs(exchange, trading_pairs):
     """
     total_pairs = len(trading_pairs)
     data = []
+    start_time = time.time()
     for index, pair in enumerate(trading_pairs):
         try:
             current_rate = get_funding_rate(exchange, pair)
@@ -76,7 +77,8 @@ def get_funding_rates_for_pairs(exchange, trading_pairs):
         except Exception as e:
             print(f"Error fetching funding rate for {pair}: {e}")
             continue
-        display_progress(index, total_pairs, info="Getting current funding rates")
+        end_time = time.time()
+        display_progress(index, total_pairs, info=f"Getting current funding rates {int(end_time - start_time)} seconds")
     print("\r")
     return pd.DataFrame(data)
 
@@ -95,6 +97,7 @@ def get_historical_funding_rates_for_pairs(exchange, trading_pairs, hours=24):
     """
     total_pairs = len(trading_pairs)
     data = []
+    start_time = time.time()
     for index, pair in enumerate(trading_pairs):
         try:
             historical_rates = get_historical_funding_rates(exchange, pair, hours)
@@ -103,7 +106,8 @@ def get_historical_funding_rates_for_pairs(exchange, trading_pairs, hours=24):
         except Exception as e:
             print(f"Error fetching historical funding rate for {pair}: {e}")
             continue
-        display_progress(index, total_pairs, info="Getting historical funding rates")
+        end_time = time.time()
+        display_progress(index, total_pairs, info=f"Getting historical funding rates {int(end_time - start_time)} seconds")
     print("\r")
     return pd.DataFrame(data)
 
@@ -122,12 +126,13 @@ def get_daily_amplitude(exchange, trading_pairs):
     """
     days = CONFIG['amplitude_days']
     current_time = int(datetime.datetime.now().timestamp() * 1000)
-    start_time = current_time - days * 24 * 60 * 60 * 1000
+    ohlc_start_time = current_time - days * 24 * 60 * 60 * 1000
     total_pairs = len(trading_pairs)
     data = []
+    start_time = time.time()
     for index, pair in enumerate(trading_pairs):
         try:
-            ohlc_data = get_ohlc(exchange, pair, start_date_ms=start_time, end_date_ms=current_time, timeframe='1d')
+            ohlc_data = get_ohlc(exchange, pair, start_date_ms=ohlc_start_time, end_date_ms=current_time, timeframe='1d')
         except Exception as e:
             print(f"Error fetching ohlc data for {pair}: {e}")
             continue
@@ -144,7 +149,8 @@ def get_daily_amplitude(exchange, trading_pairs):
                      'max_daily_amplitude': max_amplitude,
                      'amplitude_days': amplitude_days})
 
-        display_progress(index, total_pairs, info="Getting daily amplitudes")
+        end_time = time.time()
+        display_progress(index, total_pairs, info=f"Getting daily amplitudes {int(end_time - start_time)} seconds")
     print("\r")
     return pd.DataFrame(data)
 

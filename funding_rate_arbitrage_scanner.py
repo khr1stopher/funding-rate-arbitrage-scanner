@@ -2,6 +2,7 @@ import pandas as pd
 from config import CONFIG
 from fetch_data import fetch_and_save_data
 from analyze_data import analyze_data
+import time
 
 # Setting display options for pandas DataFrame
 pd.set_option('display.max_columns', None)  # None means unlimited
@@ -19,11 +20,18 @@ def main():
 
     Note: Data should be saved before analysis.
     """
+
+    start_time = time.time()
     if CONFIG['fetch_and_save_data']:
         fetch_and_save_data()
+    end_time = time.time()
+    print(f"Time taken to fetch and save data: {end_time - start_time:.2f} seconds")
 
+    start_time = time.time()
     if CONFIG['analyze_data_from_files']:
         analyze_data()
+    end_time = time.time()
+    print(f"Time taken to analyze data: {end_time - start_time:.2f} seconds")
 
 
 if __name__ == '__main__':
