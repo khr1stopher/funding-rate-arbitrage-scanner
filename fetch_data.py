@@ -36,12 +36,14 @@ def fetch_and_save_data():
         hours = CONFIG['funding_historical_days'] * 24
         df_historical_rates = get_historical_funding_rates_for_pairs(exchange, perp_trading_pairs, hours=hours)
 
-        # Get daily amplitude data
-        df_daily_amplitude = get_daily_amplitude(exchange, perp_trading_pairs)
-
         # Merge and save data to file
         intersection_df = pd.merge(df_rates, df_historical_rates, on='pair', how='left')
-        intersection_df = pd.merge(intersection_df, df_daily_amplitude, on='pair', how='left')
+
+        if CONFIG['fetch_amplitude_data']:
+            # Get daily amplitude data
+            df_daily_amplitude = get_daily_amplitude(exchange, perp_trading_pairs)
+            intersection_df = pd.merge(intersection_df, df_daily_amplitude, on='pair', how='left')
+
 
         df_to_file(intersection_df, directory_data, f"funding_rates_{exchange.id}")
 
