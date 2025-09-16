@@ -162,20 +162,25 @@ def create_perp_perp_opportunities_df(exchange_1, exchange_2, df_1, df_2):
 
     # Identify amplitude as the maximum between two exchanges or the values with more data available
     # Assigning initial values
-    df['mean_daily_amplitude'] = df[['mean_daily_amplitude_x', 'mean_daily_amplitude_y']].max(axis=1)
-    df['max_daily_amplitude'] = df[['max_daily_amplitude_x', 'max_daily_amplitude_y']].max(axis=1)
-    df['amplitude_days'] = df['amplitude_days_x']
+    if CONFIG['fetch_amplitude_data']:
+        df['mean_daily_amplitude'] = df[['mean_daily_amplitude_x', 'mean_daily_amplitude_y']].max(axis=1)
+        df['max_daily_amplitude'] = df[['max_daily_amplitude_x', 'max_daily_amplitude_y']].max(axis=1)
+        df['amplitude_days'] = df['amplitude_days_x']
 
-    # Updating values based on conditions
-    condition_1 = df['amplitude_days_x'] > df['amplitude_days_y']
-    condition_2 = df['amplitude_days_y'] > df['amplitude_days_x']
+        # Updating values based on conditions
+        condition_1 = df['amplitude_days_x'] > df['amplitude_days_y']
+        condition_2 = df['amplitude_days_y'] > df['amplitude_days_x']
+        df.loc[condition_2, 'mean_daily_amplitude'] = df['mean_daily_amplitude_y']
+        df.loc[condition_2, 'max_daily_amplitude'] = df['max_daily_amplitude_y']
+        df.loc[condition_2, 'amplitude_days'] = df['amplitude_days_y']
 
-    df.loc[condition_1, 'mean_daily_amplitude'] = df['mean_daily_amplitude_x']
-    df.loc[condition_1, 'max_daily_amplitude'] = df['max_daily_amplitude_x']
-    df.loc[condition_1, 'amplitude_days'] = df['amplitude_days_x']
-    df.loc[condition_2, 'mean_daily_amplitude'] = df['mean_daily_amplitude_y']
-    df.loc[condition_2, 'max_daily_amplitude'] = df['max_daily_amplitude_y']
-    df.loc[condition_2, 'amplitude_days'] = df['amplitude_days_y']
+        df.loc[condition_1, 'mean_daily_amplitude'] = df['mean_daily_amplitude_x']
+        df.loc[condition_1, 'max_daily_amplitude'] = df['max_daily_amplitude_x']
+        df.loc[condition_1, 'amplitude_days'] = df['amplitude_days_x']
+    else:
+        df['mean_daily_amplitude'] = None
+        df['max_daily_amplitude'] = None
+        df['amplitude_days'] = None
 
     return df[
         ['pair', 'rate_diff', f'APY_historical_average', 'short_exchange', 'long_exchange',
@@ -216,6 +221,11 @@ def create_spot_perp_opportunites_df(perpetual_exchange, perpetual_rates_df, spo
 
     # Round APY
     spot_perp_df['APY_historical_average'] = spot_perp_df['APY_historical_average'].round(decimals=2)
+
+    if not CONFIG['fetch_amplitude_data']:
+        spot_perp_df['mean_daily_amplitude'] = None
+        spot_perp_df['max_daily_amplitude'] = None
+        spot_perp_df['amplitude_days'] = None
 
     return spot_perp_df[
         ['pair', 'rate', 'APY_historical_average', 'perp_exchange', 'spot_exchange',
