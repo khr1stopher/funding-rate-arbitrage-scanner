@@ -1,21 +1,21 @@
 CONFIG = {
     # 'perpetual_exchanges': ['binance', 'gate', 'htx', 'kucoinfutures', 'bybit', 'okx'],
-    'perpetual_exchanges': ['binance', 'gate', 'bitget', 'bybit', 'okx'],
+    'perpetual_exchanges': ['binance', 'gate', 'bitget', 'bybit', 'okx', 'mexc', 'bingx', 'whitebit', 'coinex'],
     # List of perpetual exchanges from which to obtain or analyze funding rates.
     # Specify exchange IDs according to the CCXT library format.
     # For a list of supported exchange IDs, refer to: https://docs.ccxt.com/#/?id=exchanges
 
     # 'spot_exchanges': ['binance', 'gate', 'htx', 'kucoin', 'bybit', 'okx'],
-    'spot_exchanges': ['binance', 'gate', 'bitget', 'bybit', 'okx'],
+    'spot_exchanges': ['binance', 'gate', 'bitget', 'bybit', 'okx', 'mexc', 'bingx', 'whitebit', 'coinex'],
     # List of spot exchanges for analyzing opportunities between Spot and Perpetual.
     # Specify exchange IDs according to the CCXT library format.
     # For a list of supported exchange IDs, refer to: https://docs.ccxt.com/#/?id=exchanges
 
-    'fetch_and_save_data': False,
+    'fetch_and_save_data': True,
     # Whether the script should fetch funding rates from exchanges and save them to files
     # You can fetch the data first and then change this option to False and analyze the data
 
-    'analyze_data_from_files': True,
+    'analyze_data_from_files': False,
     # Whether the script should analyze previously saved data from files.
     # Specify directory and subdirectory where files are located below.
 
@@ -39,7 +39,7 @@ CONFIG = {
     # Amplitude is the percentage difference between the daily high and low, relative to the opening price.
     # Higher amplitudes indicate greater asset volatility.
 
-    'funding_rate_threshold': 0.1,
+    'funding_rate_threshold': 0.2,
     # Minimum funding rate (or rate difference). Data below this threshold will be filtered out
 
     'get_spot_perp_opportunities': True,
